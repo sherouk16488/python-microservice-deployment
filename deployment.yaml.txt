@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: python-microservice-deployment
+  labels:
+    app: python-microservice
+spec:
+  # Number of running copies (Pods) of your microservice
+  replicas: 3 
+  selector:
+    matchLabels:
+      app: python-microservice
+  template:
+    metadata:
+      labels:
+        app: python-microservice
+    spec:
+      containers:
+      - name: python-microservice-container
+        image: us-west1-docker.pkg.dev/gkepwc/my-app-repo/my-app:latest
+        ports: 
+        - containerPort: 8080 
+        resources:
+          # Define minimum resources needed
+          requests: 
+            cpu: "100m"
+            memory: "128Mi"
+          # Define maximum resources allowed
+          limits: 
+            cpu: "500m"
+            memory: "512Mi"
