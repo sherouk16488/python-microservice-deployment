@@ -1,0 +1,24 @@
+# variables.tf
+
+variable "project_id" {
+  description = "The ID of the GCP project."
+  type        = string
+}
+
+variable "region" {
+  description = "The region for the GKE cluster."
+  type        = string
+  default     = "us-central1"
+}
+
+variable "cluster_name" {
+  description = "Name for the GKE cluster."
+  type        = string
+  default     = "my-tf-gke-cluster"
+}
+
+variable "machine_type" {
+  description = "The machine type for the GKE nodes (low-cost)."
+  type        = string
+  default     = "e2-small"
+}
