@@ -1,0 +1,43 @@
+substitutions:
+  _SERVICE_NAME: python-web-app
+  _REGION: us-west1
+  _AR_REPO: gke-repo
+  _TAG: 'latest' 
+
+steps:
+# 1. Build the Docker image
+- name: 'gcr.io/cloud-builders/docker'
+  id: Build
+  args:
+    - 'build'
+    - '-t'
+    - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_AR_REPO}/${_SERVICE_NAME}:${_TAG}'
+    - '--file=Dockerfile'
+    - '.'
+
+# 2. Push the image to Artifact Registry
+- name: 'gcr.io/cloud-builders/docker'
+  id: Push
+  args:
+    - 'push'
+    - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_AR_REPO}/${_SERVICE_NAME}:${_TAG}'
+
+# 3. Deploy to Cloud Run
+- name: 'gcr.io/cloud-builders/gcloud'
+  id: Deploy
+  args:
+    - run
+    - deploy
+    - ${_SERVICE_NAME}
+    - --image=${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_AR_REPO}/${_SERVICE_NAME}:${_TAG}
+    - --region=${_REGION}
+    - --platform=managed
+    - --allow-unauthenticated
+    - --project=${PROJECT_ID}
+  waitFor: ['Push']
+
+images:
+- '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_AR_REPO}/${_SERVICE_NAME}:${_TAG}'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
