@@ -1,3 +1,0 @@
-# terraform.tfvars
-
-project_id = "project-f5540a7d-f96c-4e78-93d"
